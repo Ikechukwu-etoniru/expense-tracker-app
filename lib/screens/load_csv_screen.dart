@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:csv/csv.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:thrifty_expense/models/csv_data_model.dart';
 
+import '/models/csv_data_model.dart';
 import '/providers/tx_provider.dart';
 
 class LoadCsvDataScreen extends StatelessWidget {
@@ -123,19 +122,6 @@ class LoadCsvDataScreen extends StatelessWidget {
         },
       ),
     );
-  }
-
-  pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      PlatformFile file = result.files.first;
-
-      final input = File(file.path.toString()).openRead();
-      await input
-          .transform(utf8.decoder)
-          .transform(const CsvToListConverter())
-          .toList();
-    }
   }
 
   Future<List<List<dynamic>>> loadingCsvData(String path) async {
