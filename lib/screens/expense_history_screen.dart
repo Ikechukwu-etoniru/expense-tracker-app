@@ -54,6 +54,7 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
     final deviceHeight = (MediaQuery.of(context).size.height -
         appBarr.preferredSize.height -
         MediaQuery.of(context).padding.top);
+        final deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: const Color(0xff010a42),
@@ -97,6 +98,7 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
                           itemBuilder: (context, i) => ExpenseListView(
                             expenseList[i],
                             deviceHeight,
+                            deviceWidth
                           ),
                         ),
                 ),
@@ -176,14 +178,16 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
 class ExpenseListView extends StatefulWidget {
   final Transaction tx;
   final double deviceHeight;
-  const ExpenseListView(this.tx, this.deviceHeight, {Key? key})
+  final double deviceWidth;
+  const ExpenseListView(this.tx, this.deviceHeight, this.deviceWidth,{Key? key})
       : super(key: key);
 
   @override
   State<ExpenseListView> createState() => _ExpenseListViewState();
 }
 
-class _ExpenseListViewState extends State<ExpenseListView> {
+class _ExpenseListViewState extends State<ExpenseListView>
+    with SingleTickerProviderStateMixin {
   bool showMore = false;
 
   @override
@@ -215,86 +219,78 @@ class _ExpenseListViewState extends State<ExpenseListView> {
         curve: Curves.easeIn,
         margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
         height: showMore == false
-            ? widget.deviceHeight / 6.5
-            : widget.deviceHeight / 4.5,
+            ? widget.deviceHeight / 7.5
+            : widget.deviceHeight / 5,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             border: Border.all(color: Colors.black45, width: 3)),
         duration: const Duration(milliseconds: 500),
-        child: Column(children: [
-          Expanded(
-            child: ListTile(
-              leading: CircleAvatar(
-                child: TxImage(widget.tx.category),
-              ),
-              title: widget.tx.title.length > 13
-                  ? FittedBox(
-                      child: Text(
-                        widget.tx.title,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            wordSpacing: 3),
-                      ),
-                    )
-                  : Text(
-                      widget.tx.title,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          wordSpacing: 3),
-                    ),
-              subtitle: widget.tx.title.length > 9
-                  ? Text(
-                      DateFormat.yMEd().format(widget.tx.date),
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
-                    )
-                  : Text(
-                      DateFormat.yMEd().format(widget.tx.date),
-                      style: const TextStyle(color: Colors.grey, fontSize: 14),
-                    ),
-              trailing: FittedBox(
-                child: Row(
-                  children: [
-                    const Text(
-                      'NGN',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    const SizedBox(width: 3),
-                    Text(
-                      '${widget.tx.amount}',
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          showMore = !showMore;
-                        });
-                      },
-                      icon: Icon(
-                        showMore ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+        child: ListView(padding: const EdgeInsets.all(8), children: [
+          Row(children: [
+            CircleAvatar(
+              child: TxImage(widget.tx.category),
+            ),
+            const SizedBox(
+              width: 13,
+            ),
+            SizedBox(
+              width: widget.deviceWidth * 0.3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.tx.title,
+                    softWrap: true,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
                         color: Colors.white,
-                      ),
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          Provider.of<TxProvider>(context, listen: false)
-                              .deleteExpense(widget.tx.id);
-                        },
-                        icon: const Icon(
-                          Icons.delete,
-                          color: Colors.red,
-                          size: 20,
-                        ))
-                  ],
-                ),
+                        wordSpacing: 3),
+                  ),
+                  Text(
+                    DateFormat.yMEd().format(widget.tx.date),
+                    style: const TextStyle(color: Colors.grey, fontSize: 14),
+                  )
+                ],
               ),
             ),
-          ),
+            const Spacer(),
+            const Text(
+              'NGN',
+              style: TextStyle(color: Colors.white),
+            ),
+            const SizedBox(width: 3),
+            Text(
+              '${widget.tx.amount}',
+              style: const TextStyle(color: Colors.white),
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  showMore = !showMore;
+                });
+              },
+              icon: Icon(
+                showMore ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                color: Colors.white,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                Provider.of<TxProvider>(context, listen: false)
+                    .deleteExpense(widget.tx.id);
+              },
+              icon: const Icon(
+                Icons.delete,
+                color: Colors.red,
+                size: 20,
+              ),
+            )
+          ]),
           if (showMore)
             Container(
               margin:
-                  const EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 1),
+                  const EdgeInsets.only(top: 10, left: 5, right: 5, bottom: 1),
               height: widget.deviceHeight / 4.5 - widget.deviceHeight / 7.0,
               child: ListView(children: [
                 Text(
@@ -305,7 +301,7 @@ class _ExpenseListViewState extends State<ExpenseListView> {
                   style: const TextStyle(color: Colors.white70, wordSpacing: 3),
                 ),
               ]),
-            )
+            ),
         ]),
       ),
     );

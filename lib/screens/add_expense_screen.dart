@@ -281,30 +281,32 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  InkWell(
-                    focusColor: Colors.red,
-                    onTap: () {
-                      if (value == null) {
-                        _categorySnackBar(ctx);
-                      } else if (selectedDate == null) {
-                        _dateSnackBar(ctx);
-                      } else {
-                        _saveForm();
-                      }
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(left: 15),
-                      alignment: Alignment.center,
-                      child: const Text(
-                        'Save Expense',
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold),
+                  Center(
+                    child: InkWell(
+                      focusColor: Colors.red,
+                      onTap: () {
+                        if (value == null) {
+                          _categorySnackBar(ctx);
+                        } else if (selectedDate == null) {
+                          _dateSnackBar(ctx);
+                        } else {
+                          _saveForm();
+                        }
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 15),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Save Expense',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.bold),
+                        ),
+                        height: 39,
+                        width: 380,
+                        decoration: BoxDecoration(
+                            color: Colors.yellow,
+                            borderRadius: BorderRadius.circular(10)),
                       ),
-                      height: 39,
-                      width: 380,
-                      decoration: BoxDecoration(
-                          color: Colors.yellow,
-                          borderRadius: BorderRadius.circular(10)),
                     ),
                   )
                 ],

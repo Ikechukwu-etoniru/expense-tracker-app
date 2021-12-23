@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 class DateSelecter extends StatefulWidget {
   final Function selectDate;
 
- const DateSelecter(this.selectDate,{Key? key}) : super(key: key);
+  const DateSelecter(this.selectDate, {Key? key}) : super(key: key);
 
   @override
   State<DateSelecter> createState() => _DateSelecterState();
