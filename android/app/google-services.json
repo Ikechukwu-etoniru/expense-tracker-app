@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "871323354113",
+    "project_id": "thrifty-expense-7fd55",
+    "storage_bucket": "thrifty-expense-7fd55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:871323354113:android:dd337d8f3f3f7069ac2c00",
+        "android_client_info": {
+          "package_name": "com.delishcare.thrifty_expense"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "871323354113-ig1ank0m5v5v7dn59bbcn686g35f9mjh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1ZCWBjiqQ0EG5OLaFDXGY90dXW3IIcFc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "871323354113-ig1ank0m5v5v7dn59bbcn686g35f9mjh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

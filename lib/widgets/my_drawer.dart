@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:thrifty_expense/providers/login_screen_provider.dart';
 
 import '/screens/export_expense.dart';
 import '/screens/expense_history_screen.dart';
@@ -77,7 +79,22 @@ class MyDrawer extends StatelessWidget {
             ),
             const Divider(
               color: Colors.white,
-            )
+            ),
+             ListTile(
+              title: const Text(
+                'Logout',
+                style: TextStyle(fontSize: 16, color: Colors.white),
+              ),
+              leading: const Icon(Icons.logout, color: Colors.white),
+              onTap: () {
+                Provider.of<GoogleSigninProvider>(context, listen: false).googleLogout();
+              }
+            ),
+            const Divider(
+              color: Colors.white,
+              height: 2,
+            ),
+
           ],
         ),
       ),

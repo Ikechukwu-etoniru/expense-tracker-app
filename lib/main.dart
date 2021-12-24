@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:thrifty_expense/screens/home_page.dart';
 
+import '/providers/login_screen_provider.dart';
 import '/screens/export_expense.dart';
 import '/providers/income_provider.dart';
 import '/screens/expense_history_screen.dart';
@@ -8,9 +11,10 @@ import '/screens/income_history_screen.dart';
 import '/providers/tx_provider.dart';
 import '/screens/add_expense_screen.dart';
 import '/screens/add_income_screen.dart';
-import '/screens/dashboard_screen.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -26,7 +30,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (BuildContext context) => Incomes(),
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (BuildContext context) => GoogleSigninProvider(),)
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -36,15 +42,14 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Poppins',
           primarySwatch: Colors.yellow,
         ),
-        home: const DashboardScreen(),
+        home: const HomePage(),
         routes: {
           // '/' : (ctx) => const DashboardScreen(),
           AddExpenseScreen.routeName: (ctx) => const AddExpenseScreen(),
           AddIncomeScreen.routeName: (ctx) => const AddIncomeScreen(),
-          ExpenseHistoryScreen.routeName: (ctx) =>  const ExpenseHistoryScreen(),
-          IncomeHistoryScreen.routeName: (ctx) =>  const IncomeHistoryScreen(),
-          ExportExpenseScreen.routeName: (ctx) =>  const ExportExpenseScreen()
-
+          ExpenseHistoryScreen.routeName: (ctx) => const ExpenseHistoryScreen(),
+          IncomeHistoryScreen.routeName: (ctx) => const IncomeHistoryScreen(),
+          ExportExpenseScreen.routeName: (ctx) => const ExportExpenseScreen()
         },
       ),
     );

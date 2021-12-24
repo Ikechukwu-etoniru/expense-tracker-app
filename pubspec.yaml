@@ -43,6 +43,9 @@ dependencies:
   path_provider: ^2.0.7
   csv: ^5.0.1
   file_picker: ^4.2.7
+  firebase_auth: ^3.3.4
+  google_sign_in: ^5.2.1
+  font_awesome_flutter: ^9.2.0
   
 
 dev_dependencies:
@@ -92,6 +95,8 @@ flutter:
     - images/gift.png
     - images/expense_coverpic.png
     - images/income_coberpic.png
+    - images/loginlogo.png
+    
     
 
   # An image asset can refer to one or more resolution-specific "variants", see
