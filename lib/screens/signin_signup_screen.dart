@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:thrifty_expense/providers/login_screen_provider.dart';
+
+import '/providers/login_screen_provider.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -114,7 +115,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           const SizedBox(height: 10),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Provider.of<GoogleSigninProvider>(context, listen: false)
+                  .facebookLogin();
+            },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(
