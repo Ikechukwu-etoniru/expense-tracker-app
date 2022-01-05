@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +14,18 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  var userType = UserType.signup;
+  Future<bool> _checkInternetConnection() async {
+    late bool connectStatus;
+    try {
+      final response = await InternetAddress.lookup('www.kindacode.com');
+      if (response.isNotEmpty) {
+        connectStatus = true;
+      }
+    } on SocketException catch (err) {
+      connectStatus = false;
+    }
+    return connectStatus;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +33,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       backgroundColor: const Color(0xff010a42),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SizedBox(
             height: deviceHeight * 0.1,
@@ -85,26 +97,69 @@ class _SignUpScreenState extends State<SignUpScreen> {
             height: deviceHeight * 0.06,
           ),
           ElevatedButton(
-            onPressed: () {
-              Provider.of<GoogleSigninProvider>(context, listen: false)
-                  .googleLogin();
+            onPressed: () async {
+              final _internetConnection = await _checkInternetConnection();
+              if (_internetConnection) {
+                await Provider.of<GoogleSigninProvider>(context, listen: false)
+                    .googleLogin();
+              } else {
+                showDialog<void>(
+                    context: context,
+                    builder: (_) {
+                      return AlertDialog(
+                          backgroundColor: const Color(0xff010a42),
+                          title: const Text(
+                            'Check your internet connection',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                                fontFamily: 'Raleway'),
+                          ),
+                          content: const Text(
+                            'Internet connection required to signup/signin.',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                height: 1.5,
+                                fontSize: 15,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.5,
+                                fontFamily: 'Raleway'),
+                          ),
+                          elevation: 30,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ]);
+                    });
+              }
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Text(
-                    userType == UserType.signup
-                        ? 'Signup with Google'
-                        : 'Signin with Google',
-                    style: const TextStyle(
+                    'Signin/Signup with Google',
+                    style: TextStyle(
                         fontWeight: FontWeight.bold,
                         wordSpacing: 2,
                         fontSize: 17),
                   ),
-                  const SizedBox(width: 12),
-                  const FaIcon(
+                  SizedBox(width: 12),
+                  FaIcon(
                     FontAwesomeIcons.google,
                     size: 17,
                     color: Colors.red,
@@ -113,67 +168,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              Provider.of<GoogleSigninProvider>(context, listen: false)
-                  .facebookLogin();
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    userType == UserType.signup
-                        ? 'Signup with Facebook'
-                        : 'Signin with Facebook',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        wordSpacing: 2,
-                        fontSize: 17),
-                  ),
-                  const SizedBox(width: 12),
-                  const FaIcon(
-                    FontAwesomeIcons.facebook,
-                    size: 17,
-                    color: Colors.blue,
-                  )
-                ],
-              ),
-            ),
-          ),
           const Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                userType == UserType.signup
-                    ? 'Already have an account'
-                    : 'Don\'t have an account yet',
-                style: const TextStyle(color: Colors.white),
-              ),
-              const SizedBox(width: 0.2),
-              TextButton(
-                  onPressed: () {
-                    if (userType == UserType.signup) {
-                      setState(() {
-                        userType = UserType.login;
-                      });
-                    } else if (userType == UserType.login) {
-                      setState(() {
-                        userType = UserType.signup;
-                      });
-                    }
-                  },
-                  child:
-                      Text(userType == UserType.signup ? 'Signin' : 'Signup')),
-            ],
-          ),
         ],
       ),
     );
   }
 }
-
-enum UserType { login, signup }

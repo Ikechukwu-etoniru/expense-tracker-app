@@ -173,8 +173,6 @@ class IncomeListView extends StatelessWidget {
   final double dH;
   const IncomeListView(this.i, this.dH, {Key? key}) : super(key: key);
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Container(

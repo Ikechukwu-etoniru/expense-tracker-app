@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '/providers/income_provider.dart';
@@ -47,8 +48,59 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
         child: Text(item),
       );
   final _forms = GlobalKey<FormState>();
+  Future<bool?> _confirmSaveIncomeDialog(
+      String category, DateTime date, int amount) {
+    return showDialog<bool>(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            backgroundColor: const Color(0xff010a42),
+            title: const Text(
+              'Confirm Income Details',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                  fontFamily: 'Raleway'),
+            ),
+            content: Text(
+              'Amount - NGN ${amount.toString()} \nDate - ${DateFormat.MMMEd().format(date)} \nCategory - $category',
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                  height: 1.5,
+                  fontSize: 15,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                  fontFamily: 'Raleway'),
+            ),
+            elevation: 30,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: const Text('Confirm'),
+              )
+            ],
+          );
+        });
+  }
 
-  void _saveForm() {
+  void _saveForm() async {
     final isValid = _forms.currentState!.validate();
 
     if (!isValid) {
@@ -58,10 +110,17 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
       return;
     }
     _forms.currentState!.save();
-    Provider.of<Incomes>(context, listen: false)
-        .addIncome(amountInput!, selectedDate!, value!);
-
-    Navigator.of(context).pop();
+    var _confirm =
+        await _confirmSaveIncomeDialog(value!, selectedDate!, amountInput!);
+    if (_confirm == null) {
+      return;
+    } else if (_confirm) {
+      Provider.of<Incomes>(context, listen: false)
+          .addIncome(amountInput!, selectedDate!, value!);
+      Navigator.of(context).pop();
+    } else if (_confirm == false) {
+      return;
+    }
   }
 
   final _amountFocusNode = FocusNode();

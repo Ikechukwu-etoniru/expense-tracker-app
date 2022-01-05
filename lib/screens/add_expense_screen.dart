@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '/providers/tx_provider.dart';
@@ -15,7 +16,6 @@ class AddExpenseScreen extends StatefulWidget {
 
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final _amountFocusNode = FocusNode();
-  final _desFocusNode = FocusNode();
   final _items = [
     'Business',
     'Education',
@@ -27,8 +27,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   String? value;
 
   DateTime? selectedDate;
-
-  
 
   void selectDate(DateTime sdate) {
     selectedDate = sdate;
@@ -61,7 +59,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     ));
   }
 
-  void _saveForm() {
+  void _saveForm() async {
     final isValid = _forms.currentState!.validate();
 
     if (!isValid) {
@@ -70,25 +68,80 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     if (selectedDate == null || value == null) {
       return;
     }
-
     _forms.currentState!.save();
-    Provider.of<TxProvider>(context, listen: false).addExpense(
-        titleInput, amountInput, descriptionInput, selectedDate!, value!);
-
-    Navigator.of(context).pop();
+    final _confirm = await confirmSaveExpenseDialog(
+        titleInput, value!, selectedDate!, amountInput);
+    if (_confirm == null) {
+      return;
+    } else if (_confirm) {
+      Provider.of<TxProvider>(context, listen: false).addExpense(
+          titleInput, amountInput, descriptionInput, selectedDate!, value!);
+      Navigator.of(context).pop();
+    } else if (_confirm == false) {
+      return;
+    }
   }
 
   late String titleInput;
   late int amountInput;
   late String descriptionInput;
-  
-  // trying to make changes
+
+  Future<bool?> confirmSaveExpenseDialog(
+      String title, String category, DateTime date, int amount) {
+    return showDialog<bool>(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            backgroundColor: const Color(0xff010a42),
+            title: const Text(
+              'Confirm Expense Details',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                  fontFamily: 'Raleway'),
+            ),
+            content: Text(
+              'Title - title \nAmount - NGN ${amount.toString()} \nDate - ${DateFormat.MMMEd().format(date)} \nCategory - $category',
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                  height: 1.5,
+                  fontSize: 15,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                  fontFamily: 'Raleway'),
+            ),
+            elevation: 30,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: const Text('Confirm'),
+              )
+            ],
+          );
+        });
+  }
 
   @override
   void dispose() {
     super.dispose();
     _amountFocusNode.dispose();
-    _desFocusNode.dispose();
   }
 
   @override
@@ -171,7 +224,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         ),
                         TextFormField(
                           onFieldSubmitted: (_) {
-                            FocusScope.of(context).requestFocus(_desFocusNode);
+                            FocusScope.of(context).unfocus();
                           },
                           focusNode: _amountFocusNode,
                           keyboardType: TextInputType.number,
@@ -215,7 +268,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         ),
                         TextFormField(
                           textCapitalization: TextCapitalization.sentences,
-                          focusNode: _desFocusNode,
                           maxLines: 2,
                           keyboardType: TextInputType.multiline,
                           textInputAction: TextInputAction.next,
@@ -284,7 +336,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   Center(
                     child: InkWell(
                       focusColor: Colors.red,
-                      onTap: () {
+                      onTap: () async {
                         if (value == null) {
                           _categorySnackBar(ctx);
                         } else if (selectedDate == null) {

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:thrifty_expense/screens/home_page.dart';
+import 'package:thrifty_expense/providers/notification_provider.dart';
+import 'package:thrifty_expense/screens/dashboard_screen.dart';
 
+import '/providers/firebase_provider.dart';
+import '/screens/home_page.dart';
+import '/screens/store_online.dart';
 import '/providers/login_screen_provider.dart';
 import '/screens/export_expense.dart';
 import '/providers/income_provider.dart';
@@ -32,7 +36,14 @@ class MyApp extends StatelessWidget {
           create: (BuildContext context) => Incomes(),
         ),
         ChangeNotifierProvider(
-          create: (BuildContext context) => GoogleSigninProvider(),)
+          create: (BuildContext context) => GoogleSigninProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (BuildContext context) => FirebaseProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (BuildContext context) => NotificationService(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -44,12 +55,13 @@ class MyApp extends StatelessWidget {
         ),
         home: const HomePage(),
         routes: {
-          // '/' : (ctx) => const DashboardScreen(),
+          DashboardScreen.routeName : (ctx) => const DashboardScreen(),
           AddExpenseScreen.routeName: (ctx) => const AddExpenseScreen(),
           AddIncomeScreen.routeName: (ctx) => const AddIncomeScreen(),
           ExpenseHistoryScreen.routeName: (ctx) => const ExpenseHistoryScreen(),
           IncomeHistoryScreen.routeName: (ctx) => const IncomeHistoryScreen(),
-          ExportExpenseScreen.routeName: (ctx) => const ExportExpenseScreen()
+          ExportExpenseScreen.routeName: (ctx) => const ExportExpenseScreen(),
+          StoreOnlineScreen.routename: (ctx) => const StoreOnlineScreen()
         },
       ),
     );

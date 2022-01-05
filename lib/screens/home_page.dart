@@ -13,9 +13,13 @@ class HomePage extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (ctx, snapShot) {
         if (snapShot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(
             color: Colors.yellow,
-          );
+          ),
+            ),
+          ) ;
         }else if (snapShot.hasError) {
           return const Center(child: Text('Something went wrong'),);
         }else if (snapShot.hasData) {

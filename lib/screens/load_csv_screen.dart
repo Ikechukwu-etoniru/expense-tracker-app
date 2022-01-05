@@ -97,8 +97,11 @@ class LoadCsvDataScreen extends StatelessWidget {
                             saveCsvData(snapshot, context);
                             Navigator.of(context).pop();
                             ScaffoldMessenger.of(ctx).hideCurrentSnackBar();
-                            var snackBar1 = const SnackBar(
-                              content: Text(
+                            var snackBar1 =  SnackBar(
+                              action: SnackBarAction(label: 'Close', onPressed: () {
+                                ScaffoldMessenger.of(ctx).removeCurrentSnackBar();
+                              }),
+                              content: const Text(
                                 'CVS data imported successfully',
                                 softWrap: true,
                                 style: TextStyle(

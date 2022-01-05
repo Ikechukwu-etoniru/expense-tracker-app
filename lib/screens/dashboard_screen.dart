@@ -13,6 +13,7 @@ import '/screens/add_income_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
+  static const routeName = '/dashboard_screen';
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();

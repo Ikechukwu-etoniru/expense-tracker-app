@@ -54,7 +54,7 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
     final deviceHeight = (MediaQuery.of(context).size.height -
         appBarr.preferredSize.height -
         MediaQuery.of(context).padding.top);
-        final deviceWidth = MediaQuery.of(context).size.width;
+    final deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: const Color(0xff010a42),
@@ -96,10 +96,7 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
                       : ListView.builder(
                           itemCount: expenseList.length,
                           itemBuilder: (context, i) => ExpenseListView(
-                            expenseList[i],
-                            deviceHeight,
-                            deviceWidth
-                          ),
+                              expenseList[i], deviceHeight, deviceWidth),
                         ),
                 ),
                 AnimatedContainer(
@@ -179,7 +176,8 @@ class ExpenseListView extends StatefulWidget {
   final Transaction tx;
   final double deviceHeight;
   final double deviceWidth;
-  const ExpenseListView(this.tx, this.deviceHeight, this.deviceWidth,{Key? key})
+  const ExpenseListView(this.tx, this.deviceHeight, this.deviceWidth,
+      {Key? key})
       : super(key: key);
 
   @override

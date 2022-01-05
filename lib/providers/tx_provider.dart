@@ -34,10 +34,10 @@ class TxProvider with ChangeNotifier {
     }).toList();
   }
 
-  List<Transaction> filterByDateRange(DateTimeRange dateRange) {
+  List<Transaction> sortByDate(DateTime date) {
     return _tx.where((element) {
-      return element.date.isAfter(dateRange.start) &&
-          element.date.isBefore(dateRange.end);
+      var elementDate = DateTime.parse(element.id);
+      return elementDate.isAfter(date);
     }).toList();
   }
 
@@ -135,7 +135,7 @@ class TxProvider with ChangeNotifier {
     }
 
     String category() {
-     if (cate == 'ExpenseType.food') {
+      if (cate == 'ExpenseType.food') {
         return 'Food';
       } else if (cate == 'ExpenseType.business') {
         return 'Business';
@@ -150,7 +150,6 @@ class TxProvider with ChangeNotifier {
       }
     }
 
-
     var _newTransaction = Transaction(
         id: id,
         title: title,
@@ -158,8 +157,8 @@ class TxProvider with ChangeNotifier {
         description: description,
         category: categ(),
         date: DateTime.parse(date));
-
-    await DbDatabase.instance.insertExpense({
+    if (_tx.every((element) => element.id != _newTransaction.id)) {
+      await DbDatabase.instance.insertExpense({
       DbDatabase.exId: _newTransaction.id,
       DbDatabase.exTitle: _newTransaction.title,
       DbDatabase.exAmount: _newTransaction.amount,
@@ -170,6 +169,9 @@ class TxProvider with ChangeNotifier {
 
     _tx.insert(0, _newTransaction);
     notifyListeners();
+    }
+
+    
   }
 
   void getExpenses() async {
@@ -197,5 +199,62 @@ class TxProvider with ChangeNotifier {
         )
         .toList();
     notifyListeners();
+  }
+
+  void addFirebaseExpense(String title, int amount, String description,
+      String date, String cate, String id) async {
+    ExpenseType categ() {
+      if (cate == 'ExpenseType.food') {
+        return ExpenseType.food;
+      } else if (cate == 'ExpenseType.business') {
+        return ExpenseType.business;
+      } else if (cate == 'ExpenseType.education') {
+        return ExpenseType.education;
+      } else if (cate == 'ExpenseType.luxury') {
+        return ExpenseType.luxury;
+      } else if (cate == 'ExpenseType.travel') {
+        return ExpenseType.travel;
+      } else {
+        return ExpenseType.miscellaneous;
+      }
+    }
+
+    String category() {
+      if (cate == 'ExpenseType.food') {
+        return 'Food';
+      } else if (cate == 'ExpenseType.business') {
+        return 'Business';
+      } else if (cate == 'ExpenseType.education') {
+        return 'Education';
+      } else if (cate == 'ExpenseType.luxury') {
+        return 'Luxury';
+      } else if (cate == 'ExpenseType.travel') {
+        return 'Travel';
+      } else {
+        return 'Miscellaneous';
+      }
+    }
+
+    var _newTx = Transaction(
+        id: id,
+        title: title,
+        amount: amount,
+        description: description,
+        category: categ(),
+        date: DateTime.parse(date));
+
+    if (_tx.every((element) => element.id != _newTx.id)) {
+      _tx.insert(0, _newTx);
+      DbDatabase.instance.insertExpense({
+        DbDatabase.exId: _newTx.id,
+        DbDatabase.exTitle: _newTx.title,
+        DbDatabase.exAmount: _newTx.amount,
+        DbDatabase.exDate: _newTx.date.toIso8601String(),
+        DbDatabase.exDescription: _newTx.description,
+        DbDatabase.exCategory: category()
+      });
+    } else {
+      return;
+    }
   }
 }
