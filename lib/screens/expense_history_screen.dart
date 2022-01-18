@@ -50,7 +50,7 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
   Widget build(BuildContext context) {
     final expense = Provider.of<TxProvider>(context);
     final expenseList =
-        selectedDate == null ? expense.tx : expense.filterByDate(selectedDate!);
+        selectedDate == null ? expense.tx.reversed.toList() : expense.filterByDate(selectedDate!);
     final deviceHeight = (MediaQuery.of(context).size.height -
         appBarr.preferredSize.height -
         MediaQuery.of(context).padding.top);
@@ -224,67 +224,82 @@ class _ExpenseListViewState extends State<ExpenseListView>
             border: Border.all(color: Colors.black45, width: 3)),
         duration: const Duration(milliseconds: 500),
         child: ListView(padding: const EdgeInsets.all(8), children: [
-          Row(children: [
-            CircleAvatar(
-              child: TxImage(widget.tx.category),
-            ),
-            const SizedBox(
-              width: 13,
-            ),
-            SizedBox(
-              width: widget.deviceWidth * 0.3,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.tx.title,
-                    softWrap: true,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        wordSpacing: 3),
+          Row(
+            children: [
+              SizedBox(
+                width: widget.deviceWidth * 0.1,
+                child: CircleAvatar(
+                  child: TxImage(widget.tx.category),
+                ),
+              ),
+              SizedBox(
+                width: widget.deviceWidth * 0.04,
+              ),
+              SizedBox(
+                width: widget.deviceWidth * 0.35,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FittedBox(
+                      child: Text(
+                        widget.tx.title,
+                        softWrap: true,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            wordSpacing: 3),
+                      ),
+                    ),
+                    Text(
+                      DateFormat.yMEd().format(widget.tx.date),
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: widget.deviceWidth * 0.02,
+              ),
+              SizedBox(
+                width: widget.deviceWidth * 0.18,
+                child: FittedBox(
+                  child: Text(
+                    'NGN ${widget.tx.amount}',
+                    style: const TextStyle(color: Colors.white),
                   ),
-                  Text(
-                    DateFormat.yMEd().format(widget.tx.date),
-                    style: const TextStyle(color: Colors.grey, fontSize: 14),
-                  )
-                ],
+                ),
               ),
-            ),
-            const Spacer(),
-            const Text(
-              'NGN',
-              style: TextStyle(color: Colors.white),
-            ),
-            const SizedBox(width: 3),
-            Text(
-              '${widget.tx.amount}',
-              style: const TextStyle(color: Colors.white),
-            ),
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  showMore = !showMore;
-                });
-              },
-              icon: Icon(
-                showMore ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                color: Colors.white,
+              SizedBox(
+                width: widget.deviceWidth * 0.1,
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      showMore = !showMore;
+                    });
+                  },
+                  icon: Icon(
+                    showMore ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                    color: Colors.white,
+                  ),
+                ),
               ),
-            ),
-            IconButton(
-              onPressed: () {
-                Provider.of<TxProvider>(context, listen: false)
-                    .deleteExpense(widget.tx.id);
-              },
-              icon: const Icon(
-                Icons.delete,
-                color: Colors.red,
-                size: 20,
-              ),
-            )
-          ]),
+              SizedBox(
+                width: widget.deviceWidth * 0.1,
+                child: IconButton(
+                  onPressed: () {
+                    Provider.of<TxProvider>(context, listen: false)
+                        .deleteExpense(widget.tx.id);
+                  },
+                  icon: const Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                    size: 20,
+                  ),
+                ),
+              )
+            ],
+          ),
           if (showMore)
             Container(
               margin:
@@ -305,3 +320,9 @@ class _ExpenseListViewState extends State<ExpenseListView>
     );
   }
 }
+
+
+
+
+
+

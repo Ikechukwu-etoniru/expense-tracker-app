@@ -112,7 +112,7 @@ class TxProvider with ChangeNotifier {
       DbDatabase.exCategory: cate
     });
 
-    _tx.insert(0, _newTransaction);
+    _tx.add(_newTransaction);
     notifyListeners();
   }
 
@@ -244,7 +244,7 @@ class TxProvider with ChangeNotifier {
         date: DateTime.parse(date));
 
     if (_tx.every((element) => element.id != _newTx.id)) {
-      _tx.insert(0, _newTx);
+      _tx.add(_newTx);
       DbDatabase.instance.insertExpense({
         DbDatabase.exId: _newTx.id,
         DbDatabase.exTitle: _newTx.title,

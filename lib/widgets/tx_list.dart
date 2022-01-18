@@ -8,11 +8,10 @@ import '/widgets/tx_chip.dart';
 class TxList extends StatelessWidget {
   const TxList({Key? key}) : super(key: key);
 
-  
-
   @override
   Widget build(BuildContext context) {
-    final myList = Provider.of<TxProvider>(context).tx20;
+    final myList = Provider.of<TxProvider>(context).tx20.reversed.toList();
+
     return myList.isEmpty
         ? Center(
             child: Column(

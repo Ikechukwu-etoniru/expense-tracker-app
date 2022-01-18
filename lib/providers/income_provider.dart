@@ -65,7 +65,7 @@ class Incomes with ChangeNotifier {
       DbDatabase.inCategory: cate
     });
 
-    _incomeList.insert(0, newIncome);
+    _incomeList.add(newIncome);
     notifyListeners();
   }
 

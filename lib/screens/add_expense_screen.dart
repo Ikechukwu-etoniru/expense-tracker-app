@@ -104,7 +104,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   fontFamily: 'Raleway'),
             ),
             content: Text(
-              'Title - title \nAmount - NGN ${amount.toString()} \nDate - ${DateFormat.MMMEd().format(date)} \nCategory - $category',
+              'Title - $title \nAmount - NGN ${amount.toString()} \nDate - ${DateFormat.MMMEd().format(date)} \nCategory - $category',
               textAlign: TextAlign.left,
               style: const TextStyle(
                   height: 1.5,

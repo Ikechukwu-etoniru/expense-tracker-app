@@ -48,7 +48,7 @@ class _IncomeHistoryScreenState extends State<IncomeHistoryScreen> {
   Widget build(BuildContext context) {
     final income = Provider.of<Incomes>(context);
     final incomeList = selectedDate == null
-        ? income.incomeList
+        ? income.incomeList.reversed.toList()
         : income.filterByDate(selectedDate!);
     final deviceHeight = (MediaQuery.of(context).size.height -
         appBarr.preferredSize.height -

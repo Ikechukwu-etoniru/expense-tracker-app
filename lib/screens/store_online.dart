@@ -152,6 +152,7 @@ class _StoreOnlineScreenState extends State<StoreOnlineScreen> {
       if (response.isNotEmpty) {
         connectStatus = true;
       }
+    // ignore: unused_catch_clause
     } on SocketException catch (err) {
       connectStatus = false;
     }

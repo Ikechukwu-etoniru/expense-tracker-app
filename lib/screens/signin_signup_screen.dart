@@ -21,6 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (response.isNotEmpty) {
         connectStatus = true;
       }
+    // ignore: unused_catch_clause
     } on SocketException catch (err) {
       connectStatus = false;
     }

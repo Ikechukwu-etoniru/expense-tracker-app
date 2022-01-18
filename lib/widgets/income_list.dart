@@ -11,7 +11,7 @@ class IncomeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myList = Provider.of<Incomes>(context).income20;
+    final myList = Provider.of<Incomes>(context).income20.reversed.toList();
     return myList.isEmpty
         ? Center(
             child: Column(
